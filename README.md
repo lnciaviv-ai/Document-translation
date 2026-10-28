@@ -35,12 +35,16 @@ Open http://localhost:8000
 2. Go to [https://render.com](https://render.com) → **New +** → **Web Service**.
 3. Connect your repository.
 4. Configure:
-   - **Name**: anything you like (e.g. `afrikaans-translator`)
+   - **Name**: anything you like (e.g. `document-translation`)
    - **Runtime**: Python 3
    - **Build Command**: `pip install -r requirements.txt`
    - **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
    - **Plan**: Free (or Starter for better performance with large files)
-5. Click **Create Web Service**.
+5. **Important**:  
+   - Make sure the file `runtime.txt` is in the repo (forces Python 3.12).  
+   - Or set Environment Variable in Render dashboard:  
+     `PYTHON_VERSION` = `3.12.7`
+6. Click **Create Web Service**.
 
 Your app will be available at `https://your-service-name.onrender.com`.
 
@@ -53,11 +57,11 @@ Your app will be available at `https://your-service-name.onrender.com`.
 
 ## API Endpoints
 
-| Method | Path       | Description                          |
-|--------|------------|--------------------------------------|
-| GET    | `/`        | Web interface                        |
-| POST   | `/translate` | Upload a file and get translated DOCX |
-| GET    | `/health`  | Health check                          |
+| Method | Path         | Description                            |
+|--------|--------------|----------------------------------------|
+| GET    | `/`          | Web interface                          |
+| POST   | `/translate` | Upload a file and get translated DOCX  |
+| GET    | `/health`    | Health check                           |
 
 ## Limitations
 
