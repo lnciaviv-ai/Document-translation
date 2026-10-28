@@ -1,75 +1,52 @@
-# Afrikaans Document Translator
+# Afrikaans Document Translator (High Limit)
 
-A simple web app that translates documents (TXT, PDF, DOCX) from **any language** to **Afrikaans**.
+Translate large documents to Afrikaans while preserving layout, images and tables as much as possible.
 
-Built for easy deployment on **Render.com**.
+Built as a practical alternative to Google Docs translation with a much higher upload limit (100 MB).
 
 ## Features
 
-- Upload files up to **100 MB**
-- Supported formats: `.txt`, `.pdf`, `.docx`
-- Automatic source language detection
-- Translation to Afrikaans using Google Translate (via `deep-translator`)
-- Returns a bilingual DOCX (original + Afrikaans translation)
-- Clean drag-and-drop interface
+- Upload limit: **100 MB**
+- Supported formats: TXT, PDF, DOCX
+- Two modes:
+  - **Bilingual** (recommended): keeps original text + adds Afrikaans underneath
+  - **Replace**: only Afrikaans text
+- DOCX: in-place translation (images, tables, styles, headers/footers preserved)
+- PDF: converted to DOCX first (best open-source quality), then translated
+- Clean Google-inspired interface
 
-## Local Development
+## Deploy on Render
+
+1. Push this folder to a GitHub repository.
+2. Create a new **Web Service** on Render.
+3. Settings:
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+4. Environment Variable (very important):
+   - Key: `PYTHON_VERSION`
+   - Value: `3.12.7`
+5. Deploy.
+
+Also make sure `runtime.txt` is present in the repo (contains `python-3.12.7`).
+
+## Local testing
 
 ```bash
-# Create virtual environment
 python -m venv venv
-source venv/bin/activate   # On Windows: venv\Scripts\activate
-
-# Install dependencies
+source venv/bin/activate
 pip install -r requirements.txt
-
-# Run the app
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
+uvicorn main:app --reload
 ```
 
 Open http://localhost:8000
 
-## Deploy to Render.com
+## Notes
 
-1. Push this folder to a GitHub repository.
-2. Go to [https://render.com](https://render.com) → **New +** → **Web Service**.
-3. Connect your repository.
-4. Configure:
-   - **Name**: anything you like (e.g. `document-translation`)
-   - **Runtime**: Python 3
-   - **Build Command**: `pip install -r requirements.txt`
-   - **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-   - **Plan**: Free (or Starter for better performance with large files)
-5. **Important**:  
-   - Make sure the file `runtime.txt` is in the repo (forces Python 3.12).  
-   - Or set Environment Variable in Render dashboard:  
-     `PYTHON_VERSION` = `3.12.7`
-6. Click **Create Web Service**.
-
-Your app will be available at `https://your-service-name.onrender.com`.
-
-### Important Notes for Free Tier
-
-- Free services have **512 MB RAM**. Very large or complex PDFs may cause out-of-memory errors.
-- The filesystem is **ephemeral** — uploaded files are not stored permanently.
-- Free services spin down after inactivity (cold starts take ~30–60 seconds).
-- For production use with large documents, upgrade to a paid plan.
-
-## API Endpoints
-
-| Method | Path         | Description                            |
-|--------|--------------|----------------------------------------|
-| GET    | `/`          | Web interface                          |
-| POST   | `/translate` | Upload a file and get translated DOCX  |
-| GET    | `/health`    | Health check                           |
-
-## Limitations
-
-- Translation quality depends on Google Translate.
-- Long documents are chunked (≈4500 characters) to stay within free API limits.
-- Scanned PDFs (image-only) are **not** supported (no OCR).
-- Formatting from the original document is mostly lost (output is a clean bilingual DOCX).
+- Perfect 1:1 PDF layout preservation is not possible with free open-source tools.
+- The PDF → DOCX conversion is currently the best practical approach.
+- Very complex or scanned PDFs may lose some formatting.
+- Free Google Translate has rate limits; very large documents can take several minutes.
 
 ## License
 
-MIT – feel free to use and modify.
+MIT

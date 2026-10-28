@@ -3,14 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dokument Vertaler → Afrikaans (Formaat behou)</title>
+  <title>Afrikaans Document Translator – High Limit</title>
   <style>
-    :root { --primary: #0d6efd; --bg: #f8f9fa; }
+    :root {
+      --primary: #1a73e8;
+      --primary-hover: #1557b0;
+      --bg: #f8f9fa;
+      --card: #ffffff;
+      --text: #202124;
+      --muted: #5f6368;
+      --border: #dadce0;
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: "Google Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background: var(--bg);
-      color: #212529;
+      color: var(--text);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -18,65 +26,108 @@
       padding: 2rem 1rem;
     }
     .card {
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.08);
-      max-width: 580px;
+      background: var(--card);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(60,64,67,.3), 0 4px 8px 3px rgba(60,64,67,.15);
+      max-width: 640px;
       width: 100%;
       padding: 2.5rem;
-      text-align: center;
     }
-    h1 { font-size: 1.7rem; margin-bottom: 0.5rem; }
-    p { color: #6c757d; margin-bottom: 1.5rem; line-height: 1.5; }
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 400;
+      margin-bottom: 0.4rem;
+      color: var(--text);
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.8rem;
+      line-height: 1.5;
+    }
     .badge {
       display: inline-block;
-      background: #e7f1ff;
-      color: #0d6efd;
-      font-size: 0.8rem;
-      padding: 0.25rem 0.7rem;
-      border-radius: 20px;
+      background: #e8f0fe;
+      color: var(--primary);
+      font-size: 0.78rem;
+      font-weight: 500;
+      padding: 0.3rem 0.75rem;
+      border-radius: 16px;
       margin-bottom: 1.5rem;
     }
     .dropzone {
-      border: 2px dashed #ced4da;
+      border: 2px dashed var(--border);
       border-radius: 12px;
       padding: 2.8rem 1.5rem;
+      text-align: center;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
       margin-bottom: 1.5rem;
+      background: #fafafa;
     }
-    .dropzone.dragover {
+    .dropzone:hover, .dropzone.dragover {
       border-color: var(--primary);
-      background: #e7f1ff;
+      background: #e8f0fe;
     }
     .dropzone input { display: none; }
+    .drop-icon { font-size: 2.5rem; margin-bottom: 0.8rem; opacity: 0.7; }
+    .file-info {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: 0.6rem;
+    }
+    .options {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .option {
+      flex: 1;
+      min-width: 140px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.9rem 1rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: left;
+    }
+    .option:hover { border-color: var(--primary); }
+    .option.selected {
+      border-color: var(--primary);
+      background: #e8f0fe;
+    }
+    .option strong { display: block; font-size: 0.95rem; margin-bottom: 0.2rem; }
+    .option span { font-size: 0.8rem; color: var(--muted); }
     button {
       background: var(--primary);
       color: white;
       border: none;
-      padding: 0.9rem 2rem;
+      padding: 0.95rem 1.5rem;
       border-radius: 8px;
       font-size: 1rem;
-      font-weight: 600;
+      font-weight: 500;
       cursor: pointer;
       width: 100%;
       transition: background 0.2s;
     }
     button:disabled {
-      background: #adb5bd;
+      background: #dadce0;
+      color: #80868b;
       cursor: not-allowed;
     }
-    button:hover:not(:disabled) { background: #0b5ed7; }
+    button:hover:not(:disabled) { background: var(--primary-hover); }
     .status {
-      margin-top: 1.5rem;
-      font-size: 0.95rem;
-      min-height: 1.5rem;
-      color: #495057;
+      margin-top: 1.4rem;
+      font-size: 0.92rem;
+      min-height: 1.4rem;
+      color: var(--muted);
+      text-align: center;
     }
     .progress {
-      height: 6px;
-      background: #e9ecef;
-      border-radius: 3px;
+      height: 4px;
+      background: #e8eaed;
+      border-radius: 2px;
       overflow: hidden;
       margin-top: 1rem;
       display: none;
@@ -85,57 +136,68 @@
       height: 100%;
       background: var(--primary);
       width: 0%;
-      transition: width 0.3s;
+      transition: width 0.4s ease;
+    }
+    .notes {
+      margin-top: 1.8rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.5;
     }
     footer {
       margin-top: 2rem;
-      font-size: 0.85rem;
-      color: #adb5bd;
+      font-size: 0.8rem;
+      color: #80868b;
       text-align: center;
-    }
-    .file-info {
-      font-size: 0.9rem;
-      color: #495057;
-      margin-top: 0.5rem;
-    }
-    .note {
-      font-size: 0.85rem;
-      color: #6c757d;
-      margin-top: 1rem;
-      line-height: 1.4;
     }
   </style>
 </head>
 <body>
   <div class="card">
-    <h1>📄 → Afrikaans Vertaler</h1>
-    <div class="badge">Formaat + beelde word so ver as moontlik behou</div>
-    <p>
-      Laai TXT, PDF of DOCX op (tot 100 MB).<br>
-      Die stelsel probeer die oorspronklike uitleg, tabelle en beelde behou.
+    <h1>Afrikaans Document Translator</h1>
+    <p class="subtitle">
+      Translate large documents while keeping layout, images and tables.<br>
+      Higher limits than Google Docs.
     </p>
+    <div class="badge">Up to 100 MB · TXT · PDF · DOCX</div>
 
     <div class="dropzone" id="dropzone">
       <input type="file" id="fileInput" accept=".txt,.pdf,.docx">
-      <div id="dropText">Sleep lêer hier of klik om te kies</div>
+      <div class="drop-icon">📄</div>
+      <div id="dropText">Drag & drop your document here<br>or click to browse</div>
       <div class="file-info" id="fileInfo"></div>
     </div>
 
-    <button id="translateBtn" disabled>Vertaal na Afrikaans</button>
+    <div class="options">
+      <div class="option selected" data-mode="bilingual" id="optBilingual">
+        <strong>Bilingual</strong>
+        <span>Original + Afrikaans (recommended)</span>
+      </div>
+      <div class="option" data-mode="replace" id="optReplace">
+        <strong>Replace</strong>
+        <span>Only Afrikaans text</span>
+      </div>
+    </div>
+
+    <button id="translateBtn" disabled>Translate to Afrikaans</button>
 
     <div class="progress" id="progress">
       <div class="progress-bar" id="progressBar"></div>
     </div>
     <div class="status" id="status"></div>
 
-    <div class="note">
-      <strong>Nota:</strong> DOCX hou die meeste formaat. PDF word eers na DOCX omgeskakel (baie beter as net teks).
+    <div class="notes">
+      <strong>How it works:</strong><br>
+      • DOCX → text is translated in place, images, tables and styles stay<br>
+      • PDF → converted to DOCX first (best open-source quality), then translated<br>
+      • Bilingual mode is safer when text length changes a lot
     </div>
   </div>
 
   <footer>
-    Gebou vir Render.com · Google Translate via deep-translator<br>
-    DOCX + PDF layout-preserving mode
+    Built for high-limit document translation · Powered by Google Translate
   </footer>
 
   <script>
@@ -147,7 +209,21 @@
     const progressBar = document.getElementById('progressBar');
     const dropText = document.getElementById('dropText');
     const fileInfo = document.getElementById('fileInfo');
+    const optBilingual = document.getElementById('optBilingual');
+    const optReplace = document.getElementById('optReplace');
+
     let selectedFile = null;
+    let mode = 'bilingual';
+
+    // Mode selection
+    [optBilingual, optReplace].forEach(el => {
+      el.addEventListener('click', () => {
+        optBilingual.classList.remove('selected');
+        optReplace.classList.remove('selected');
+        el.classList.add('selected');
+        mode = el.dataset.mode;
+      });
+    });
 
     dropzone.addEventListener('click', () => fileInput.click());
     dropzone.addEventListener('dragover', e => {
@@ -168,40 +244,49 @@
       const allowed = ['.txt', '.pdf', '.docx'];
       const ext = '.' + file.name.split('.').pop().toLowerCase();
       if (!allowed.includes(ext)) {
-        status.textContent = 'Ongeldige lêertipe. Gebruik TXT, PDF of DOCX.';
-        status.style.color = '#dc3545';
+        status.textContent = 'Unsupported file type. Please use TXT, PDF or DOCX.';
+        status.style.color = '#d93025';
         return;
       }
       if (file.size > 100 * 1024 * 1024) {
-        status.textContent = 'Lêer te groot (maks 100 MB).';
-        status.style.color = '#dc3545';
+        status.textContent = 'File is too large (max 100 MB).';
+        status.style.color = '#d93025';
         return;
       }
       selectedFile = file;
-      dropText.textContent = 'Gekies:';
-      fileInfo.textContent = `${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+      dropText.innerHTML = 'Selected file';
+      fileInfo.textContent = `${file.name}  ·  ${(file.size / 1024 / 1024).toFixed(2)} MB`;
       translateBtn.disabled = false;
       status.textContent = '';
-      status.style.color = '#495057';
+      status.style.color = 'var(--muted)';
     }
 
     translateBtn.addEventListener('click', async () => {
       if (!selectedFile) return;
       translateBtn.disabled = true;
-      status.textContent = 'Besig om te vertaal en formaat te behou… dit kan ’n paar minute neem.';
-      status.style.color = '#0d6efd';
+      status.textContent = 'Translating… This can take a few minutes for large documents.';
+      status.style.color = 'var(--primary)';
       progress.style.display = 'block';
-      progressBar.style.width = '20%';
+      progressBar.style.width = '15%';
 
       const formData = new FormData();
       formData.append('file', selectedFile);
+      formData.append('mode', mode);
 
       try {
+        // Simulate progress while waiting
+        const progressInterval = setInterval(() => {
+          const current = parseFloat(progressBar.style.width);
+          if (current < 85) progressBar.style.width = (current + 3) + '%';
+        }, 800);
+
         const res = await fetch('/translate', {
           method: 'POST',
           body: formData
         });
-        progressBar.style.width = '70%';
+
+        clearInterval(progressInterval);
+        progressBar.style.width = '90%';
 
         if (!res.ok) {
           let errMsg = res.statusText;
@@ -215,7 +300,7 @@
         const blob = await res.blob();
         progressBar.style.width = '100%';
 
-        let filename = 'afrikaans_vertaling.docx';
+        let filename = 'afrikaans_translation.docx';
         const disposition = res.headers.get('Content-Disposition');
         if (disposition && disposition.includes('filename=')) {
           const match = disposition.match(/filename="?([^"]+)"?/);
@@ -231,17 +316,17 @@
         a.remove();
         URL.revokeObjectURL(url);
 
-        status.textContent = 'Klaar! Die Afrikaanse lêer is afgelaai (met formaat behou).';
-        status.style.color = '#198754';
+        status.textContent = 'Done! Your Afrikaans document has been downloaded.';
+        status.style.color = '#188038';
       } catch (err) {
-        status.textContent = 'Fout: ' + err.message;
-        status.style.color = '#dc3545';
+        status.textContent = 'Error: ' + err.message;
+        status.style.color = '#d93025';
       } finally {
         translateBtn.disabled = false;
         setTimeout(() => {
           progress.style.display = 'none';
           progressBar.style.width = '0%';
-        }, 2000);
+        }, 2500);
       }
     });
   </script>
