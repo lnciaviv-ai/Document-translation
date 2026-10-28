@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="af">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dokument Vertaler → Afrikaans</title>
+  <style>
+    :root { --primary: #0d6efd; --bg: #f8f9fa; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: #212529;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+      max-width: 560px;
+      width: 100%;
+      padding: 2.5rem;
+      text-align: center;
+    }
+    h1 { font-size: 1.75rem; margin-bottom: 0.5rem; }
+    p { color: #6c757d; margin-bottom: 2rem; line-height: 1.5; }
+    .dropzone {
+      border: 2px dashed #ced4da;
+      border-radius: 12px;
+      padding: 3rem 1.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 1.5rem;
+    }
+    .dropzone.dragover {
+      border-color: var(--primary);
+      background: #e7f1ff;
+    }
+    .dropzone input { display: none; }
+    button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.9rem 2rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.2s;
+    }
+    button:disabled {
+      background: #adb5bd;
+      cursor: not-allowed;
+    }
+    button:hover:not(:disabled) { background: #0b5ed7; }
+    .status {
+      margin-top: 1.5rem;
+      font-size: 0.95rem;
+      min-height: 1.5rem;
+      color: #495057;
+    }
+    .progress {
+      height: 6px;
+      background: #e9ecef;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 1rem;
+      display: none;
+    }
+    .progress-bar {
+      height: 100%;
+      background: var(--primary);
+      width: 0%;
+      transition: width 0.3s;
+    }
+    footer {
+      margin-top: 2rem;
+      font-size: 0.85rem;
+      color: #adb5bd;
+      text-align: center;
+    }
+    .file-info {
+      font-size: 0.9rem;
+      color: #495057;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>📄 → Afrikaans Vertaler</h1>
+    <p>
+      Laai enige dokument op (TXT, PDF, DOCX – tot 100 MB).<br>
+      Outomatiese taaldetectie + vertaling na Afrikaans.
+    </p>
+
+    <div class="dropzone" id="dropzone">
+      <input type="file" id="fileInput" accept=".txt,.pdf,.docx">
+      <div id="dropText">Sleep lêer hier of klik om te kies</div>
+      <div class="file-info" id="fileInfo"></div>
+    </div>
+
+    <button id="translateBtn" disabled>Vertaal na Afrikaans</button>
+
+    <div class="progress" id="progress">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="status" id="status"></div>
+  </div>
+
+  <footer>
+    Gebou vir Render.com · Gebruik Google Translate via deep-translator<br>
+    Ondersteun TXT, PDF en DOCX
+  </footer>
+
+  <script>
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+    const translateBtn = document.getElementById('translateBtn');
+    const status = document.getElementById('status');
+    const progress = document.getElementById('progress');
+    const progressBar = document.getElementById('progressBar');
+    const dropText = document.getElementById('dropText');
+    const fileInfo = document.getElementById('fileInfo');
+    let selectedFile = null;
+
+    dropzone.addEventListener('click', () => fileInput.click());
+    dropzone.addEventListener('dragover', e => {
+      e.preventDefault();
+      dropzone.classList.add('dragover');
+    });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+    dropzone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+    });
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files.length) handleFile(fileInput.files[0]);
+    });
+
+    function handleFile(file) {
+      const allowed = ['.txt', '.pdf', '.docx'];
+      const ext = '.' + file.name.split('.').pop().toLowerCase();
+      if (!allowed.includes(ext)) {
+        status.textContent = 'Ongeldige lêertipe. Gebruik TXT, PDF of DOCX.';
+        status.style.color = '#dc3545';
+        return;
+      }
+      if (file.size > 100 * 1024 * 1024) {
+        status.textContent = 'Lêer te groot (maks 100 MB).';
+        status.style.color = '#dc3545';
+        return;
+      }
+      selectedFile = file;
+      dropText.textContent = 'Gekies:';
+      fileInfo.textContent = `${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+      translateBtn.disabled = false;
+      status.textContent = '';
+      status.style.color = '#495057';
+    }
+
+    translateBtn.addEventListener('click', async () => {
+      if (!selectedFile) return;
+      translateBtn.disabled = true;
+      status.textContent = 'Besig om te vertaal… dit kan ’n paar minute neem vir groot dokumente.';
+      status.style.color = '#0d6efd';
+      progress.style.display = 'block';
+      progressBar.style.width = '25%';
+
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+
+      try {
+        const res = await fetch('/translate', {
+          method: 'POST',
+          body: formData
+        });
+        progressBar.style.width = '70%';
+
+        if (!res.ok) {
+          let errMsg = res.statusText;
+          try {
+            const err = await res.json();
+            errMsg = err.detail || errMsg;
+          } catch (_) {}
+          throw new Error(errMsg);
+        }
+
+        const blob = await res.blob();
+        progressBar.style.width = '100%';
+
+        // Get filename from header if possible
+        let filename = 'afrikaans_vertaling.docx';
+        const disposition = res.headers.get('Content-Disposition');
+        if (disposition && disposition.includes('filename=')) {
+          const match = disposition.match(/filename="?([^"]+)"?/);
+          if (match) filename = match[1];
+        }
+
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+
+        status.textContent = 'Klaar! Die Afrikaanse lêer is afgelaai.';
+        status.style.color = '#198754';
+      } catch (err) {
+        status.textContent = 'Fout: ' + err.message;
+        status.style.color = '#dc3545';
+      } finally {
+        translateBtn.disabled = false;
+        setTimeout(() => {
+          progress.style.display = 'none';
+          progressBar.style.width = '0%';
+        }, 2000);
+      }
+    });
+  </script>
+</body>
+</html>
